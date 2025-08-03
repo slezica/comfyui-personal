@@ -869,6 +869,7 @@ class OwlDetector(Personal):
         # Croppity crop:
         cropped = image[0, top:bottom, left:right, :]
         return (cropped.unsqueeze(0),)
+
 # --------------------------------------------------------------------------------------------------
 
 
