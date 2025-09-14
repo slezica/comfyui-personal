@@ -330,7 +330,7 @@ class UseIPAdapter(Personal):
         model_kind = get_model_kind(model)
         clip_name = 'laion_CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors' # nothing to see here
         
-        ipa_pattern = re.compile(f'^{model_kind}_ipa{"_plus" if plus else ""}\.(bin|safetensors)$')
+        ipa_pattern = re.compile(f'^{model_kind}_ipa{"_plus" if plus else ""}[.](bin|safetensors)$')
         ipa_name = get_model_name('ipadapter', ipa_pattern)
 
         g_cv_loader = g.node('CLIPVisionLoader', clip_name=clip_name)
