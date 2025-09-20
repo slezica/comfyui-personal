@@ -1,3 +1,4 @@
+import time
 import itertools
 import collections
 import re
@@ -709,6 +710,7 @@ class GenerateImage(Personal):
 
         if save:
             prefix = '_'.join(filter(lambda it: it is not None, [
+                f"{int(time.time())}",
                 get_model_kind(model),
                 f"i{steps}",
                 f"{sampler.replace('_', '')}",
@@ -775,7 +777,7 @@ class UpscaleImage(Personal):
             g.node(
                 'SaveImage',
                 images          = g_apply.out(0),
-                filename_prefix = f'upscale_{f}',
+                filename_prefix = f'{int(time.time())}_upscale_{f}',
                 prompt          = prompt,
                 extra_pnginfo   = extra_pnginfo
             )
