@@ -309,6 +309,8 @@ class UseIPAdapter(Personal):
         return {
             "required": {
                 'model': ipaa['required']['model'],
+                'clip': (folder_paths.get_filename_list("clip_vision"), { 'tooltip': "Maybe ViT-H 14 Laion2B s32B b79k" }),
+                'ipa': (folder_paths.get_filename_list("ipadapter"),),
                 'positive': ipaa['required']['image'],
                 "plus": ('BOOLEAN', { 'default': True }),
                 "weight": ipaa['required']['weight'],
@@ -325,17 +327,13 @@ class UseIPAdapter(Personal):
 
     RETURN_TYPES = ('MODEL',)
 
-    def execute(self, model, positive, weight, effect, combine, plus, start, end, negative=None, mask=None):
+    def execute(self, model, clip, ipa, positive, weight, effect, combine, plus, start, end, negative=None, mask=None):
         g = GraphBuilder()
 
         model_kind = get_model_kind(model)
-        clip_name = 'laion_CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors' # nothing to see here
         
-        ipa_pattern = re.compile(f'^{model_kind}_ipa{"_plus" if plus else ""}[.](bin|safetensors)$')
-        ipa_name = get_model_name('ipadapter', ipa_pattern)
-
-        g_cv_loader = g.node('CLIPVisionLoader', clip_name=clip_name)
-        g_ipa_loader = g.node('IPAdapterModelLoader', ipadapter_file=ipa_name)
+        g_cv_loader = g.node('CLIPVisionLoader', clip_name=clip)
+        g_ipa_loader = g.node('IPAdapterModelLoader', ipadapter_file=ipa)
 
         if mask is not None:
             mask = 1 - mask # mask hides, does not select
