@@ -86,7 +86,7 @@ app.registerExtension({
         this._alignNodes(app.canvas.selected_nodes, state.selectedLast, 'top')
 
       } else if (ev.shiftKey && ev.key == 'C') {
-        this._arrange(app.canvas.selected_nodes, state.selectedLast, 1, 36)
+        this._arrange(app.canvas.selected_nodes, state.selectedLast, 1, 40)
         this._fit(app.canvas.selected_nodes, state.selectedLast, 0)
         this._alignNodes(app.canvas.selected_nodes, state.selectedLast, 'left')
 
