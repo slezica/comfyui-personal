@@ -23,6 +23,10 @@ The nodes will appear under the "personal" category in the node browser.
 - **GenerateImage** - Unified sampling with multiple scheduler support (TCD, DPM++, Euler)
 - **UpscaleImage** - Image upscaling with model selection
 - **OwlDetector** - Object detection using OWL-ViT models
+- **SliceImageBatch** - Extract subset of images from batch
+- **SliceMaskBatch** - Extract subset of masks from batch
+- **MaskBatch** - Concatenate two mask batches
+- **RepeatMaskBatch** - Repeat a mask multiple times
 
 ## UI Enhancements
 
