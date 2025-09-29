@@ -905,15 +905,14 @@ class SliceMaskBatch(Personal):
         }
 
     RETURN_TYPES = ('MASK',)
-    RETURN_NAMES = ('MASK',)
 
-    def execute(self, images, start, end):
+    def execute(self, masks, start, end):
         if end == -1:
-            images = images[start:]
+            masks = masks[start:]
         else:
-            images = images[start:end+1]
+            masks = masks[start:end+1]
 
-        return (images,)
+        return (masks,)
 
 
 class MaskBatch(Personal):
@@ -999,6 +998,8 @@ NODE_CLASS_MAPPINGS = {
     'GenerateImage': GenerateImage,
     'UpscaleImage': UpscaleImage,
     'SliceImageBatch': SliceImageBatch,
+    'SliceMaskBatch': SliceMaskBatch,
+    'MaskBatch': MaskBatch,
     'OwlDetector': OwlDetector,
 }
 
@@ -1016,6 +1017,8 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     'CLIPTextEncodeVar': "CLIP Text Encode (Var)",
     'FillMask': "Fill Mask",
     'SliceImageBatch': "Slice Image Batch",
+    'SliceMaskBatch': "Slice Mask Batch",
+    'MaskBatch': "Batch Masks",
     'OwlDetector': "Owl Detector",
 }
 
