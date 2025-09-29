@@ -17,6 +17,7 @@ from comfy_extras.nodes_canny import Canny
 from comfy_extras.nodes_controlnet import SetUnionControlNetType
 from comfy_extras.nodes_pag import PerturbedAttentionGuidance
 from comfy_extras.nodes_mask import ImageCompositeMasked, InvertMask, GrowMask
+from comfy_extras.nodes_images import RepeatImageBatch
 from comfy_extras.nodes_upscale_model import UpscaleModelLoader, ImageUpscaleWithModel
 from comfy_extras.nodes_differential_diffusion import DifferentialDiffusion
 from comfy_extras.nodes_custom_sampler import (
@@ -793,7 +794,6 @@ class UpscaleImage(Personal):
             'expand': g.finalize()
         }
 
-
 # --------------------------------------------------------------------------------------------------
 
 
@@ -872,6 +872,31 @@ class OwlDetector(Personal):
 
 # --------------------------------------------------------------------------------------------------
 
+class SliceImageBatch(Personal):
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                'images': ('IMAGE',),
+                'start': ('INT', {'default': 0, 'tooltip': "Start index, inclusive (negative counts from the end)"}),
+                'end': ('INT', {'default': -1, 'min': -1000, 'max': 1000, 'tooltip': "End index, inclusive (negative counts from the end)"}),
+            }
+        }
+
+    RETURN_TYPES = ('IMAGE',)
+    RETURN_NAMES = ('images',)
+
+    def execute(self, images, start, end):
+        if end == -1:
+            images = images[start:]
+        else:
+            images = images[start:end+1]
+
+        return (images,)
+
+
+# --------------------------------------------------------------------------------------------------
+
 
 def get_model_name(kind, pat):
     names = folder_paths.get_filename_list(kind)
@@ -938,6 +963,7 @@ NODE_CLASS_MAPPINGS = {
     'UseInfiniteYou': UseInfiniteYou,
     'GenerateImage': GenerateImage,
     'UpscaleImage': UpscaleImage,
+    'SliceImageBatch': SliceImageBatch,
     'OwlDetector': OwlDetector,
 }
 
@@ -954,7 +980,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     'UpscaleImage': "Upscale Image",
     'CLIPTextEncodeVar': "CLIP Text Encode (Var)",
     'FillMask': "Fill Mask",
-    'AutoFeatherMask': "Autofeather Mask",
+    'SliceImageBatch': "Slice Image Batch",
     'OwlDetector': "Owl Detector",
 }
 
