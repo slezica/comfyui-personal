@@ -925,9 +925,23 @@ class MaskBatch(Personal):
 
     RETURN_TYPES = ("MASK",)
 
-    def batch(self, mask1, mask2):
+    def execute(self, mask1, mask2):
+        print(mask1.shape)
         concatenated = torch.cat((mask1, mask2), dim=0)
         return (concatenated,)
+
+
+class RepeatMaskBatch(Personal):
+    @classmethod
+    def INPUT_TYPES(s):
+        return {"required": { "mask": ("MASK",),
+                              "amount": ("INT", {"default": 1, "min": 1, "max": 4096}),
+                              }}
+    RETURN_TYPES = ("MASK",)
+
+    def execute(self, mask, amount):
+        repeated = mask.repeat((amount, 1,1))
+        return (repeated,)
 
 # --------------------------------------------------------------------------------------------------
 
@@ -999,6 +1013,7 @@ NODE_CLASS_MAPPINGS = {
     'UpscaleImage': UpscaleImage,
     'SliceImageBatch': SliceImageBatch,
     'SliceMaskBatch': SliceMaskBatch,
+    'RepeatMaskBatch': RepeatMaskBatch,
     'MaskBatch': MaskBatch,
     'OwlDetector': OwlDetector,
 }
@@ -1018,6 +1033,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     'FillMask': "Fill Mask",
     'SliceImageBatch': "Slice Image Batch",
     'SliceMaskBatch': "Slice Mask Batch",
+    'RepeatMaskBatch': "Repeat Mask Batch",
     'MaskBatch': "Batch Masks",
     'OwlDetector': "Owl Detector",
 }
