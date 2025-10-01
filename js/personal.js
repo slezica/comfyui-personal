@@ -82,7 +82,7 @@ app.registerExtension({
         this._alignNodes(app.canvas.selected_nodes, state.selectedLast, alignKeys[ev.key])
 
       } else if (ev.shiftKey && ev.key == 'L') {
-        this._arrange(app.canvas.selected_nodes, state.selectedLast, 0, 40)
+        this._arrange(app.canvas.selected_nodes, state.selectedLast, 0, 20)
         this._alignNodes(app.canvas.selected_nodes, state.selectedLast, 'top')
 
       } else if (ev.shiftKey && ev.key == 'C') {
@@ -243,7 +243,7 @@ app.registerExtension({
       const prev = ns[i - 1]
 
       if (axis == 0) {
-        node.pos[axis] = prev.pos[axis] + (node.flags.collapsed ? node._collapsed_width : node.size[0]) + space
+        node.pos[axis] = prev.pos[axis] + (prev.flags.collapsed ? prev._collapsed_width : prev.size[0]) + space
       } else {
         node.pos[axis] = prev.pos[axis] + (prev.flags.collapsed ? 0 : prev.size[1]) + space
       }
@@ -258,7 +258,6 @@ app.registerExtension({
       } else {
         node.pos[axis] = next.pos[axis] - (node.flags.collapsed ? 0 : node.size[1]) - space
       }
-      console.log(node.pos)
     }
   },
 
