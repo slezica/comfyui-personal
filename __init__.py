@@ -312,7 +312,6 @@ class UseIPAdapter(Personal):
                 'clip': (folder_paths.get_filename_list("clip_vision"), { 'tooltip': "Maybe ViT-H 14 Laion2B s32B b79k" }),
                 'ipa': (folder_paths.get_filename_list("ipadapter"),),
                 'positive': ipaa['required']['image'],
-                "plus": ('BOOLEAN', { 'default': True }),
                 "weight": ipaa['required']['weight'],
                 "effect": ipaa['required']['weight_type'],
                 "combine": ipaa['required']['combine_embeds'],
@@ -327,7 +326,7 @@ class UseIPAdapter(Personal):
 
     RETURN_TYPES = ('MODEL',)
 
-    def execute(self, model, clip, ipa, positive, weight, effect, combine, plus, start, end, negative=None, mask=None):
+    def execute(self, model, clip, ipa, positive, weight, effect, combine, start, end, negative=None, mask=None):
         g = GraphBuilder()
 
         model_kind = get_model_kind(model)
