@@ -86,19 +86,6 @@ class Personal:
     CATEGORY = "personal"
     FUNCTION = "execute"
 
-    def __init__(self):
-        self.refs = {}
-
-    def load(self, node_cls, *args):
-        key = f"{node_cls.__name__}/{'_'.join(str(arg) for arg in args)}" 
-
-        if key in wcache:
-            return wcache[key].value
-
-        value = getattr(node_cls(), node_cls.FUNCTION)(*args)
-        wcache[key] = Ref(value)
-        return value
-
 
 # --------------------------------------------------------------------------------------------------
 
