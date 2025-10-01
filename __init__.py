@@ -884,13 +884,13 @@ class SliceImageBatch(Personal):
 
     RETURN_TYPES = ('IMAGE',)
 
-    def execute(self, images, start, end):
+    def execute(self, image, start, end):
         if end == -1:
-            images = images[start:]
+            image = image[start:]
         else:
-            images = images[start:end+1]
+            image = image[start:end+1]
 
-        return (images,)
+        return (image,)
 
 
 class SliceMaskBatch(Personal):
@@ -906,27 +906,28 @@ class SliceMaskBatch(Personal):
 
     RETURN_TYPES = ('MASK',)
 
-    def execute(self, masks, start, end):
+    def execute(self, mask, start, end):
         if end == -1:
-            masks = masks[start:]
+            mask = mask[start:]
         else:
-            masks = masks[start:end+1]
+            mask = mask[start:end+1]
 
-        return (masks,)
+        return (mask,)
 
 
 class MaskBatch(Personal):
     @classmethod
     def INPUT_TYPES(s):
-        return {"required": {
-            "mask1": ("MASK",),
-            "mask2": ("MASK",),
-        }}
+        return {
+            "required": {
+                "mask1": ("MASK",),
+                "mask2": ("MASK",),
+            }
+        }
 
     RETURN_TYPES = ("MASK",)
 
     def execute(self, mask1, mask2):
-        print(mask1.shape)
         concatenated = torch.cat((mask1, mask2), dim=0)
         return (concatenated,)
 
@@ -934,9 +935,13 @@ class MaskBatch(Personal):
 class RepeatMaskBatch(Personal):
     @classmethod
     def INPUT_TYPES(s):
-        return {"required": { "mask": ("MASK",),
-                              "amount": ("INT", {"default": 1, "min": 1, "max": 4096}),
-                              }}
+        return {
+            "required": {
+                "mask": ("MASK",),
+                "amount": ("INT", {"default": 1, "min": 1, "max": 4096}),
+            }
+        }
+
     RETURN_TYPES = ("MASK",)
 
     def execute(self, mask, amount):
