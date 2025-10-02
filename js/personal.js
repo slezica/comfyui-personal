@@ -23,7 +23,7 @@ app.registerExtension({
     const state = this._state
     const showSearchBoxW = app.canvas.onSearchBox
     const onSelectionChangeW = app.canvas.onSelectionChange
-
+    window.app = app
     app.canvas.onSearchBox = function(ev, query) {
       const results = showSearchBoxW?.apply(this, arguments) ?? []
 
@@ -82,11 +82,11 @@ app.registerExtension({
         this._alignNodes(app.canvas.selected_nodes, state.selectedLast, alignKeys[ev.key])
 
       } else if (ev.shiftKey && ev.key == 'L') {
-        this._arrange(app.canvas.selected_nodes, state.selectedLast, 0, 20)
+        this._arrange(app.canvas.selected_nodes, state.selectedLast, 0, 20, 10)
         this._alignNodes(app.canvas.selected_nodes, state.selectedLast, 'top')
 
       } else if (ev.shiftKey && ev.key == 'C') {
-        this._arrange(app.canvas.selected_nodes, state.selectedLast, 1, 40)
+        this._arrange(app.canvas.selected_nodes, state.selectedLast, 1, 40, 10)
         this._fit(app.canvas.selected_nodes, state.selectedLast, 0)
         this._alignNodes(app.canvas.selected_nodes, state.selectedLast, 'left')
 
@@ -226,11 +226,12 @@ app.registerExtension({
     LGraphCanvas.alignNodes(nodes, alignTo, anchor)
   },
 
-  _arrange(nodes, anchor, axis, space) {
+  _arrange(nodes, anchor, axis, space, snap) {
     const ns = Object.values(nodes) 
 
     if (!ns.includes(anchor)) ns.push(anchor) 
     if (ns.length < 2) return 
+    if (!snap) snap = 1
 
     ns.sort((a, b) => a.pos[axis] - b.pos[axis])
 
@@ -242,22 +243,28 @@ app.registerExtension({
       const node = ns[i]
       const prev = ns[i - 1]
 
+      let newPos
       if (axis == 0) {
-        node.pos[axis] = prev.pos[axis] + (prev.flags.collapsed ? prev._collapsed_width : prev.size[0]) + space
+        newPos = prev.pos[axis] + (prev.flags.collapsed ? prev._collapsed_width : prev.size[0]) + space
       } else {
-        node.pos[axis] = prev.pos[axis] + (prev.flags.collapsed ? 0 : prev.size[1]) + space
+        newPos = prev.pos[axis] + (prev.flags.collapsed ? 0 : prev.size[1]) + space
       }
+
+      node.pos[axis] = Math.round(newPos / snap) * snap
     }
 
     for (let i = a - 1; i >= 0; i--) {
       const node = ns[i]
       const next = ns[i + 1]
 
+      let newPos
       if (axis == 0) {
-        node.pos[axis] = next.pos[axis] - (node.flags.collapsed ? node._collapsed_width : node.size[0]) - space
+        newPos = next.pos[axis] - (node.flags.collapsed ? node._collapsed_width : node.size[0]) - space
       } else {
-        node.pos[axis] = next.pos[axis] - (node.flags.collapsed ? 0 : node.size[1]) - space
+        newPos = next.pos[axis] - (node.flags.collapsed ? 0 : node.size[1]) - space
       }
+
+      node.pos[axis] = Math.round(newPos / snap) * snap
     }
   },
 
