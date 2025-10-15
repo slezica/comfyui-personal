@@ -795,7 +795,7 @@ class OwlDetector(Personal):
             }
         }
 
-    RETURN_TYPES = ('IMAGE',)
+    RETURN_TYPES = ('IMAGE', 'MASK')
     # RETURN_TYPES = ('IMAGE', 'IMAGE',)
     # RETURN_NAMES = ('BEST', 'SECOND')
 
@@ -827,10 +827,10 @@ class OwlDetector(Personal):
         )
 
         box, label, score = items[0]
-        return self._crop(image, box, size)
+        return self._crop_and_mask(image, box, size)
 
-    def _crop(self, image, box, size):
-        _, height, width, _ = image.shape
+    def _crop_and_mask(self, image, box, size):
+        batch_size, height, width, _ = image.shape
 
         # Get center of bounding box
         x1, y1, x2, y2 = box
@@ -852,8 +852,13 @@ class OwlDetector(Personal):
             left = width - size
 
         # Croppity crop:
-        cropped = image[0, top:bottom, left:right, :]
-        return (cropped.unsqueeze(0),)
+        cropped = image[:, top:bottom, left:right, :]
+
+        # Create mask:
+        mask = torch.zeros((batch_size, height, width))
+        mask[:, top:bottom, left:right] = 1
+
+        return cropped, mask
 
 # --------------------------------------------------------------------------------------------------
 
